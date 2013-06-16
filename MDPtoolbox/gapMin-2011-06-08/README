@@ -1,0 +1,99 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Author: Pascal Poupart (copyright 2011)  
+%
+% While this code is made publicly available, all work that uses this
+% code, extends this code or makes a comparison to this code is
+% required to cite the following paper which describes the GapMin
+% algorithm: 
+%
+% Pascal Poupart, Kee-Eung Kima and Dongho Kim, 
+% Closing the Gap: Improved Bounds on Optimal POMDP Solutions, 
+% International Conference on Automated Planning and Scheduling (ICAPS), 
+% Freiburg, Germany, 2011.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Table of Contents:
+
+1) Installing GapMin
+2) Running GapMin
+3) Benchmark problems
+
+=============================
+
+1) Installing GapMin
+--------------------
+
+A) Unpack the code:
+
+tar -xvzf gapMin-2011-06-13.tgz
+
+B) Start matlab in the directory code-2011-06-13. This is important to
+make sure that matlab automatically executes some files at startup.
+
+cd code-2011-06-13
+matlab
+
+C) Download and install the cplex package from IBM to solve linear
+programs.  It is available for free to academics.
+
+D) Compile the cplex interface. You may need to change some of the paths
+depending on where the relevant libraries are. The following command
+worked for me with cplex 10.0 and matlab 2009a on a linux machine
+
+mex -I/usr/local/cplex/include/ilcplex -L/usr/local/cplex/lib/x86_rhel4.0_3.4/static_pic -lcplex cplexint.c
+
+E) Solve a POMDP from the directory gapMin-2011-06-13/problems. It will
+run until the upper bound and the lower bound agree on at least 3
+significant digits. Try the "cheese-taxi" problem which is quite small.
+
+main('cheese-taxi')
+
+2) Running GapMin
+-----------------
+
+To run GapMin, call the main function with the following arguments:
+
+main(problemName,maxTime,ubInterpolation)
+
+problemName: string indicating the name of a POMDP problem (without
+the .POMDP extension) in the directory gapMin-2011-06-13/problems.
+Following matlab's convention, the string should be in quotes.
+Example: main('cheese-taxi')
+
+maxTime: maximum amount of elapsed time (i.e., wall clock time) that
+gapMin will run for.  GapMin will also terminate when the lower and
+upper bounds agree on the first three significant digits.
+Example: main('cheese-taxi',1000)
+
+ubInterpolation: string indicating the upper bound interpolation
+technique {'LP','sawtooth'}.  The default is 'LP'.
+Example: main('cheese-taxi',1000,'sawtooth')
+
+After each iteration, gapMin stores some statistics in a file in the
+directory gapMin-2011-06-13/results.  These statistics include the
+cpuTime, elapsedTime (wall clock time), lower bound, upper bound and
+size of the belief set for each bound at each iteration.  You can load
+the file and view the statistics by running:
+
+load('results/cheese-taxi-time1000-sawtooth1.mat');
+cpuTime
+elapsedTime
+lbInitVal
+ubInitVal
+sizeLbBeliefSet
+sizeUbBeliefSet
+
+3) Benchmark problems
+---------------------
+
+64 benchmark problems from Cassandra's repository (www.pomdp.org) are
+included in this package.  Note that some of the problems have been
+modified slightly from the originals posted on Cassandra's website.
+In some cases, this is because the problems did not follow Cassandra's
+grammar and therefore needed to be modified to ensure proper
+parsing. In other cases, the parser did not recognize the entire
+grammar specified by Cassandra and I found it easier to modify the
+problems instead of the parser.  The parser included in the package is
+Matthijs Spaan's Matlab parser, which is freely available at
+http://staff.science.uva.nl/~mtjspaan/software/pomdp/
+

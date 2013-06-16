@@ -1,0 +1,3 @@
+Compile with:
+
+mex -I/usr/local/cplex/include/ilcplex -L/usr/local/cplex/lib/x86_rhel4.0_3.4/static_pic -lcplex cplexint.c
